@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.97.0",
+    "deno": "^2.6.8",
+    "supabase": "^2.76.15"
+  },
+  "type": "module",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+      "test": "vitest",
+      "test:run": "vitest run",
+      "test:ui": "vitest --ui"
+    }
+}

@@ -1,0 +1,73 @@
+import 'dotenv/config';
+import { describe, test, expect } from "vitest";
+import { supabase } from "../../supabase/supabase";
+
+// Test user credentials
+const testUser = {
+  email: "malte1771943596502@abc123.com",
+  password: "password456",
+};
+
+// Test address data
+const testAddress = {
+  country: "Germany",
+  postal_code: "80331",
+  city: "Munich",
+  street: "Marienplatz",
+  house_nr: 1,
+  additional: "2nd Floor, Apartment 5B",
+  remarks: "Ring the bell labeled 'Schmidt'",
+};
+
+
+async function signIn() {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email: testUser.email,
+    password: testUser.password,
+  });
+
+  if (error) {
+    console.error("Sign in failed:", error);
+    throw error;
+  }
+
+  if (!data.user) {
+    throw new Error("Signed-in user not found");
+  }
+
+  return data.user;
+}
+
+describe("Supabase Addresses table", () => {
+  test("should insert a new address for a signed-in user", async () => {
+    const user = await signIn();
+
+    const { data, error } = await supabase
+      .from("Addresses")
+      .insert([
+        {
+          country: testAddress.country,
+          postal_code: testAddress.postal_code,
+          city: testAddress.city,
+          street: testAddress.street,
+          house_nr: testAddress.house_nr,
+          additional: testAddress.additional,
+          remarks: testAddress.remarks,
+          belongs_to: user.id,
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.error("Error creating address:", error);
+      throw error;
+    }
+
+    console.log("Address created successfully:", data);
+
+    // Pass the test if no error is thrown and data exists
+    expect(data).toBeDefined();
+    expect(data?.length).toBeGreaterThan(0);
+    expect(data![0].belongs_to).toBe(user.id);
+  });
+});
