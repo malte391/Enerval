@@ -1,0 +1,24 @@
+{
+  "name": "enerval",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+<<<<<<< HEAD
+  "type": "commonjs"
+=======
+  "type": "module",
+  "devDependencies": {
+    "vitest": "^4.0.18"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.97.0",
+    "dotenv": "^17.3.1"
+  }
+>>>>>>> mobile
+}

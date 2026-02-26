@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@supabase/supabase-js": "^2.97.0",
+    "deno": "^2.6.8"
+  },
+  "type": "module",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
