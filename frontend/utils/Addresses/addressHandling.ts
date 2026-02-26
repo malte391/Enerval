@@ -41,3 +41,23 @@ export const createNewAdress = async (
     const checkThatAddressDoesNotExistYet = async () => {
 
     }
+
+    const authentificateAddress (country : string, 
+    postalCode : string, 
+    city : string, 
+    street : string, 
+    housenr : number, 
+    additional? : string, 
+    remarks? : string) : boolean => {
+        return checkThatCityExists(city) &&
+    }
+
+    const checkThatCityExists (city : string) : boolean => {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(city)}&format=json`);
+        const data = await res.json();
+        return data.length = 0
+    }
+
+    const validatePostalCode (postalCode : string) : boolean => {
+        return /^\d{5}$/.test(postalCode) && postalCode !== "00000"
+    }

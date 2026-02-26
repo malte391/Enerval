@@ -33,4 +33,12 @@ async function testCreateNewAddressForSignedInUser() {
     createNewAdress("Germany", "80331", "Munich", "Marienplatz", 1, "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
 }
 
-testCreateNewAddressForSignedInUser()
+async function testOpenStreetMapApi(postalCode:string) {
+    try {
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${postalCode}&country=Germany&format=json&limit=1`);
+        const data = await res.json();
+        console.log(data);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
