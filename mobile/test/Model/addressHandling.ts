@@ -29,6 +29,7 @@ async function signIn () {
 }
 
 async function testCreateNewAddressForSignedInUser() {
+    console.log(process.env.SUPABASE_URL)
     await signIn()
     createNewAdress("Germany", "80331", "Munich", "Marienplatz", 1, "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
 }
@@ -42,3 +43,5 @@ async function testOpenStreetMapApi(postalCode:string) {
         console.error("Error fetching data:", error);
     }
 }
+
+

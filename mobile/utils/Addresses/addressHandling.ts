@@ -1,11 +1,12 @@
 import { supabase } from "../../supabase/supabase"
+import { checkThatCityExists, validatePostalCode } from "./addressValidation"
 
 export const createNewAdress = async (
     country : string, 
     postalCode : string, 
     city : string, 
     street : string, 
-    housenr : number, 
+    housenr : string, 
     additional? : string, 
     remarks? : string) : Promise<void> => {
 
@@ -14,50 +15,41 @@ export const createNewAdress = async (
         if (!user || !user.email) {
             throw new Error('No signed-in user found')
         }
-
-        const { data, error } = await supabase
-            .from('Addresses')
-            .insert([
-                {
-                    country: country,
-                    postal_code: postalCode,
-                    city: city,
-                    street: street,
-                    house_nr: housenr,
-                    additional: additional,
-                    remarks: remarks,
-                    belongs_to: user.id
-                },
-            ])
-            .select()
-
-        if (error) throw console.error('Error when creating new Adress: ' + JSON.stringify(error))
-
-        console.log('Address created successfully')
-
+        
+        try {
+            authentificateAddress(country, postalCode, city, street, housenr)
+            const { data, error } = await supabase
+                .from('Addresses')
+                .insert([
+                    {
+                        country: country,
+                        postal_code: postalCode,
+                        city: city,
+                        street: street,
+                        house_nr: housenr,
+                        additional: additional,
+                        remarks: remarks,
+                        belongs_to: user.id
+                    },
+                ])
+                .select()
+    
+            console.log('Address created successfully')
+        } catch (e) {
+            console.log('Error when creating new Adress: ' + JSON.stringify(e))
+        }
     } 
 
-    //TODO
-    const checkThatAddressDoesNotExistYet = async () => {
-
-    }
-
-    const authentificateAddress (country : string, 
+const authentificateAddress = async (country : string, 
     postalCode : string, 
     city : string, 
     street : string, 
-    housenr : number, 
+    housenr : string, 
     additional? : string, 
-    remarks? : string) : boolean => {
-        return checkThatCityExists(city) &&
-    }
-
-    const checkThatCityExists (city : string) : boolean => {
-        const res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(city)}&format=json`);
-        const data = await res.json();
-        return data.length = 0
-    }
-
-    const validatePostalCode (postalCode : string) : boolean => {
-        return /^\d{5}$/.test(postalCode) && postalCode !== "00000"
-    }
+    remarks? : string) : Promise<boolean> => {
+        const validPostalCode : boolean = validatePostalCode(postalCode)
+        const cityExists : boolean = await checkThatCityExists(city)
+        if(!validPostalCode) {throw new Error('invalid postal code')}
+        if(!cityExists) {throw new Error(`city ${city} could not be found`)}
+        return validPostalCode && cityExists
+}

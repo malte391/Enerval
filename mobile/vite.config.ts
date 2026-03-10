@@ -4,7 +4,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
-    // automatically load env
     setupFiles: ["dotenv/config"],
   },
 });
