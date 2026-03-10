@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createNewProfile } from '../utils/User/userHandling';
+import { createNewProfile } from '../model/User/userHandling';
 import { supabase, supabaseadmin } from './supabase';
 
 

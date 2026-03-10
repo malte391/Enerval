@@ -1,18 +1,17 @@
-async function testPostalCodeApi(postalCode:string) {
+
+/**
+ * 
+ * @param postalCode Postal Code as String
+ * @returns The corresponding city or an empty string if error
+ */
+export const provideCityByPostalCode = async (postalCode : string) : Promise<string> => {
     try {
         const res = await fetch(`https://nominatim.openstreetmap.org/search?postalcode=${encodeURIComponent(postalCode)}&country=Germany&format=json&limit=1`);
         const data = await res.json();
         const display_names : string[] = data[0].display_name.split(',').map((d: string) => d.trim())
-        console.log(display_names[2])
+        return display_names[2]
     } catch (error) {
         console.error("Error fetching data:", error);
     }
+    return ""
 }
-
-async function testCityValidation (city : string) {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?city=${encodeURIComponent(city)}&format=json`);
-    const data = await res.json();
-    console.log(data)
-}
-
-testPostalCodeApi("20144")

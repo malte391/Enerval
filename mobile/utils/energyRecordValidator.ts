@@ -1,5 +1,4 @@
 
-
 export const validateRecord = (record: string): boolean => {
     const value = Number(record);
     console.log(value)

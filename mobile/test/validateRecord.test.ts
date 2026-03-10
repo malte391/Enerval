@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { appendRecord, validateRecord } from '../utils/Records/energyRecordValidator';
+import { appendRecord, validateRecord } from '../utils/energyRecordValidator';
 
 describe('validateRecord', () => {
   it('accepts exactly 6 digits', () => {

@@ -1,4 +1,4 @@
-import { checkThatCityExists, validatePostalCode } from '../utils/Addresses/addressValidation';
+import { checkThatCityExists, validatePostalCode, validateHouseNumber } from '../utils/addressValidation';
 import { describe, it, expect } from 'vitest';
 
 describe('German Postal Code Validation', () => {
@@ -38,7 +38,7 @@ describe('German Postal Code Validation', () => {
   });
 });
 
-describe('ValidateAddressInDomain', () => {
+describe('validateCity', () => {
     it('wont accept a wrongly written city', async () => {
         expect(await checkThatCityExists("Haburg")).toBe(false);
     })
@@ -77,3 +77,21 @@ describe('ValidateAddressInDomain', () => {
         results.forEach(result => expect(result).toBe(true));    
     });
 });
+
+describe('validateHouseNumber', () => {
+  it('accepts valid house numbers', () => {
+    expect(validateHouseNumber("1")).toBe(true)
+    expect(validateHouseNumber("12")).toBe(true)
+    expect(validateHouseNumber("1b")).toBe(true)
+    expect(validateHouseNumber("12B")).toBe(true)
+  })
+
+  it('rejects invalid house numbers', () => {
+    expect(validateHouseNumber("b")).toBe(false)
+    expect(validateHouseNumber("")).toBe(false)
+    expect(validateHouseNumber("1bb")).toBe(false)
+    expect(validateHouseNumber("12bb")).toBe(false)
+    expect(validateHouseNumber("12b3")).toBe(false)
+  })
+})
+

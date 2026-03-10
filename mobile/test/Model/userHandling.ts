@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createNewProfile } from '../../utils/User/userHandling.ts';
+import { createNewProfile } from '@/model/User/userHandling.ts';
 import { supabase } from '../../supabase/supabase.ts';
 
 const user = {

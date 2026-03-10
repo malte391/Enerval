@@ -1,13 +1,7 @@
 import 'dotenv/config';
-import { createNewAdress } from "../../utils/Addresses/addressHandling"
+import { createNewAdress } from "@/model/Addresses/addressHandling"
 import { supabase } from "../../supabase/supabase"
-
-const testUser = {
-    email: 'malte1771943596502@abc123.com',
-    password: 'password456',
-    firstName: 'Malte',
-    lastName: 'Engel'
-}
+import { testUser, signIn } from '../testData';
 
 const testAddress = {
   country: "Germany",
@@ -19,19 +13,9 @@ const testAddress = {
   remarks: "Ring the bell labeled 'Schmidt'"
 }
 
-async function signIn () {
-    const { data, error } = await supabase.auth.signInWithPassword({
-        email: testUser.email,
-        password: testUser.password
-    })
-    if (error) throw new Error('Sign in failed: ' + error)
-    console.log('Sign in successfull!')
-}
-
 async function testCreateNewAddressForSignedInUser() {
-    console.log(process.env.SUPABASE_URL)
     await signIn()
-    createNewAdress("Germany", "80331", "Munich", "Marienplatz", 1, "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
+    createNewAdress("Germany", "80331", "Haburg", "Marienplatz", "1", "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
 }
 
 async function testOpenStreetMapApi(postalCode:string) {
@@ -44,4 +28,5 @@ async function testOpenStreetMapApi(postalCode:string) {
     }
 }
 
+testCreateNewAddressForSignedInUser()
 
