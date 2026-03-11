@@ -1,16 +1,17 @@
 import { checkLocationExistsInDB } from "@/utils/locations";
 import { signIn } from "../testData";
-import { crteateNewMeter } from "@/model/Meters/meterHandling";
+import { createNewMeter, getUsersMeters } from "@/model/Meters/meterHandling";
 
-async function createNewMeterTest(id : string, locatedAt : string) {
+async function createNewMeterTest() {
     await signIn()
-    crteateNewMeter(id, locatedAt)
-}
-
-async function main() {
     const meterNumber = Date.now().toString().slice(8, 13) + 'mce'
-    console.log(meterNumber)
-    await createNewMeterTest(meterNumber, 'fc735ce3-921c-49c8-925f-89e6c876cab9')
+    createNewMeter(meterNumber, '4b05a7be-deb9-45e9-9c9a-e899bb2a66c0')
 }
 
-main()
+async function getUsersMetersTest() {
+    await signIn()
+    const meters = await getUsersMeters()
+    console.log(meters)
+}
+
+getUsersMetersTest()

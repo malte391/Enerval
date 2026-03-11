@@ -8,7 +8,7 @@ export async function createNewAdress(
     postalCode : string, 
     city : string, 
     street : string, 
-    housenr : string, 
+    housenr : number, 
     additional? : string, 
     remarks? : string) : Promise<void> {
         
@@ -39,5 +39,14 @@ export async function createNewAdress(
     } 
 
 export async function getSignedInUsersAddresses() {
-    
+    const userId = (await getSignedInUser()).id
+
+    const { data: Addresses, error } = await supabase
+        .from('Addresses')
+        .select('country, postal_code, city, street, additional')
+        .eq('belongs_to', userId)
+    if(error) throw new Error('Error getting users address')
+    return Addresses
 }
+
+

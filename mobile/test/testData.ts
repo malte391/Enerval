@@ -15,3 +15,5 @@ export async function signIn () {
     if (error) throw new Error('Sign in failed: ' + error)
     console.log('Sign in successfull!')
 }
+
+export const testMeter = '09487mce'

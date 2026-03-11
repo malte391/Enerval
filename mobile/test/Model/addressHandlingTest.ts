@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createNewAdress } from "@/model/Addresses/addressHandling"
+import { createNewAdress, getSignedInUsersAddresses } from "@/model/Addresses/addressHandling"
 import { supabase } from "../../supabase/supabase"
 import { testUser, signIn } from '../testData';
 
@@ -15,7 +15,7 @@ const testAddress = {
 
 async function testCreateNewAddressForSignedInUser() {
     await signIn()
-    createNewAdress("Germany", "80331", "München", "Marienplatz", "1", "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
+    createNewAdress("Germany", "80331", "München", "Marienplatz", 1, "b", "Around the corner. Meter under the incoming stairs.'")
 }
 
 async function testOpenStreetMapApi(postalCode:string) {
@@ -28,5 +28,10 @@ async function testOpenStreetMapApi(postalCode:string) {
     }
 }
 
-testCreateNewAddressForSignedInUser()
+async function testGetAddresses(){
+    await signIn()
+    const addresses = await getSignedInUsersAddresses()
+    console.log(addresses)
+}
 
+testGetAddresses()

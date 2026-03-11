@@ -3,29 +3,45 @@ import { supabase } from "@/supabase/supabase"
 import { User } from "@supabase/supabase-js"
 import { checkLocationExistsInDB } from "@/utils/locations"
 import { validateMeterInput } from "@/utils/meterValidation"
+import { Meter } from "@/types"
 
-export async function crteateNewMeter(meterNumber : string, locatedAt : string) : Promise<void> {
+export async function createNewMeter(meterNumber : string, locatedAt : string) : Promise<void> {
     
     try {
         const user : User = await getSignedInUser()
 
-        validateMeterInput(meterNumber, locatedAt)
-        const { data, error } = await supabase
-            .from('Meters')
-            .insert([{
-                meter_number: meterNumber,
-                belongs_to: user.id,
-                location: locatedAt
-            }])
+        const validation : boolean = await validateMeterInput(meterNumber, locatedAt)
+        console.log(validation)
 
-        if(error) {throw new Error(error.message)}
-            else {console.log('New meter created successfully')}
-
+        if(validation) {
+            const { data, error } = await supabase
+                .from('Meters')
+                .insert([{
+                    meter_number: meterNumber,
+                    belongs_to: user.id,
+                    location: locatedAt
+                }])
+    
+            if(error) {throw new Error('Error inserting meter in DB' +  JSON.stringify(error))}
+                else {console.log('New meter created successfully')}
+        }
     } catch (e) {
         throw new Error('Error creating new meter: ' + e)     
     }
 } 
 
+export async function getUsersMeters() {
+    const userId = (await getSignedInUser()).id
+    console.log(userId)
+
+    const { data: Meters, error } = await supabase
+        .from('Meters')
+        .select('meter_number')
+        .eq('belongs_to', userId)
+
+    if(error) throw new Error('Error getting users Meters')
+    return Meters
+}
 
 
 
