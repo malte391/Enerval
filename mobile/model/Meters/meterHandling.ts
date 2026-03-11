@@ -6,7 +6,6 @@ import { validateMeterInput } from "@/utils/meterValidation"
 
 export async function crteateNewMeter(meterNumber : string, locatedAt : string) : Promise<void> {
     
-    
     try {
         const user : User = await getSignedInUser()
 

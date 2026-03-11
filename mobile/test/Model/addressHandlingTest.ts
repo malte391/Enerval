@@ -15,7 +15,7 @@ const testAddress = {
 
 async function testCreateNewAddressForSignedInUser() {
     await signIn()
-    createNewAdress("Germany", "80331", "Haburg", "Marienplatz", "1", "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
+    createNewAdress("Germany", "80331", "München", "Marienplatz", "1", "2nd Floor, Apartment 5B", "Ring the bell labeled 'Engel'")
 }
 
 async function testOpenStreetMapApi(postalCode:string) {
