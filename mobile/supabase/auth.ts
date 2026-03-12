@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js"
-import { supabase } from "./supabase"
+import { supabase } from "./supabasetest"
 
 
 export const getSignedInUser = async () : Promise<User> => {

@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase/supabase"
+import { supabase } from "@/supabase/supabasetest"
 
 export const testUser = {
     email: 'malte1771943596502@abc123.com',

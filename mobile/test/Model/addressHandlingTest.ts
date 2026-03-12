@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { createNewAdress, getSignedInUsersAddresses } from "@/model/Addresses/addressHandling"
-import { supabase } from "../../supabase/supabase"
+import { supabase } from "../../supabase/supabasetest"
 import { testUser, signIn } from '../testData';
 
 const testAddress = {

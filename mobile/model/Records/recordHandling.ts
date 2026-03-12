@@ -1,5 +1,5 @@
 import { getSignedInUser } from "@/supabase/auth";
-import { supabase } from "@/supabase/supabase";
+import { supabase } from "@/supabase/supabasetest";
 import { appendRecord, checkThatMeterExistsInDB, validateRecord } from "@/utils/energyRecordValidator";
 
 export async function createNewRecord(value : string, meterNumber : string) {

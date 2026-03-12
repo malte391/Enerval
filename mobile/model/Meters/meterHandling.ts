@@ -1,5 +1,5 @@
 import { getSignedInUser } from "@/supabase/auth"
-import { supabase } from "@/supabase/supabase"
+import { supabase } from "@/supabase/supabasetest"
 import { User } from "@supabase/supabase-js"
 import { checkLocationExistsInDB } from "@/utils/locations"
 import { validateMeterInput } from "@/utils/meterValidation"

@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { createNewProfile } from '../model/User/userHandling';
-import { supabase, supabaseadmin } from './supabase';
+import { supabase, supabaseadmin } from './supabasetest';
 
 
 async function main() {

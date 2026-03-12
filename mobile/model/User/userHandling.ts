@@ -1,9 +1,9 @@
 import { getSignedInUser } from "@/supabase/auth"
-import { supabase } from "@/supabase/supabase"
+import { supabase } from "@/supabase/supabasetest"
 import { User } from "@supabase/supabase-js"
 
-export const createNewProfile = async (firstName : string, lastName : string) : Promise<void> => {
 
+export const createNewProfile = async (firstName : string, lastName : string) : Promise<void> => {
     try {
         const user : User = await getSignedInUser()
         const { data:insertionData, error:insertionError } = await supabase
