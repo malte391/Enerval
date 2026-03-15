@@ -5,7 +5,7 @@ import { checkLocationExistsInDB } from "@/utils/locations"
 import { validateMeterInput } from "@/utils/meterValidation"
 import { Meter } from "@/types"
 
-export async function createNewMeter(meterNumber : string, locatedAt : string) : Promise<void> {
+export async function createNewMeter(meterNumber : string, name: string, locatedAt : string) : Promise<void> {
     
     try {
         const user : User = await getSignedInUser()
@@ -18,6 +18,7 @@ export async function createNewMeter(meterNumber : string, locatedAt : string) :
                 .from('Meters')
                 .insert([{
                     meter_number: meterNumber,
+                    name: name,
                     belongs_to: user.id,
                     location: locatedAt
                 }])

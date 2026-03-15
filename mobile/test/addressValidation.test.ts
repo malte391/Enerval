@@ -79,19 +79,15 @@ describe('validateCity', () => {
 });
 
 describe('validateHouseNumber', () => {
-  it('accepts valid house numbers', () => {
-    expect(validateHouseNumber("1")).toBe(true)
-    expect(validateHouseNumber("12")).toBe(true)
-    expect(validateHouseNumber("1b")).toBe(true)
-    expect(validateHouseNumber("12B")).toBe(true)
-  })
-
-  it('rejects invalid house numbers', () => {
-    expect(validateHouseNumber("b")).toBe(false)
-    expect(validateHouseNumber("")).toBe(false)
-    expect(validateHouseNumber("1bb")).toBe(false)
-    expect(validateHouseNumber("12bb")).toBe(false)
-    expect(validateHouseNumber("12b3")).toBe(false)
-  })
+    it('rejects 0', () => expect(validateHouseNumber('0')).toBe(false))
+    it('accepts 1', () => expect(validateHouseNumber('1')).toBe(true))
+    it('accepts 1a', () => expect(validateHouseNumber('1a')).toBe(true))
+    it('rejects 1aa', () => expect(validateHouseNumber('1aa')).toBe(false))
+    it('accepts 12a', () => expect(validateHouseNumber('12a')).toBe(true))
+    it('rejects 12A', () => expect(validateHouseNumber('12A')).toBe(false))
+    it('accepts 9999z', () => expect(validateHouseNumber('9999z')).toBe(true))
+    it('rejects empty string', () => expect(validateHouseNumber('')).toBe(false))
+    it('rejects leading zero like 01', () => expect(validateHouseNumber('01')).toBe(false))
+    it('rejects 10000 (too long)', () => expect(validateHouseNumber('10000')).toBe(false))
 })
 

@@ -1,52 +1,61 @@
 import { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, Alert, Image, useWindowDimensions } from 'react-native';
 import { supabase } from '../supabase/supabasepublic';
 import { useRouter } from 'expo-router';
+import LoginButton from '@/components/Buttons/loginButton';
+import AuthInput from '@/components/Input/authInput';
+import React from 'react';
 
 export default function RegisterScreen() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [label, setLabel] = useState<string>('Create Account')
+  const [buttonColor, setButtonColor] = useState<string>('')
   const router = useRouter();
+  const {width} = useWindowDimensions()
 
   async function handleRegister() {
     setLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
-      Alert.alert('Registration failed', error.message);
+      setButtonColor(() => '#FF2323')
+      setLabel(() => 'Error! Try Again')
+      setPassword(() => '')
+      setTimeout(() => {
+        setLabel('Create Account')
+        setButtonColor('')
+      }, 4000)
     } else {
-      Alert.alert('Check your email', 'We sent you a confirmation link.');
-      router.replace('/login');
+      setLabel('Log-In Successfull! Check your e-mails for verification.')
     }
     setLoading(false);
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create account</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title={loading ? 'Creating account…' : 'Register'} onPress={handleRegister} disabled={loading} />
-      <Button title="Already have an account? Log in" onPress={() => router.push('/login')} />
-    </View>
+      <View style={styles.logoView}>
+        <Image source={require('../assets/images/logo.png')} 
+        style={{width: width * 0.7,
+          height: width * 0.18
+        }}
+        resizeMode="contain"
+        />
+      </View>
+      <View style={[styles.registerView, {width: width * 0.7}]}>
+        <AuthInput value={email} onChangeText={setEmail} placeholder="e-mail" />
+        <AuthInput value={password} onChangeText={setPassword} placeholder="password" secureTextEntry={true} />
+        <View style={styles.btns}>
+          <LoginButton label={loading ? '...' : label} onPress={handleRegister} color={buttonColor}/>
+        </View>
+      </View>
+  </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 24, fontWeight: '600', marginBottom: 24 },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, marginBottom: 12 },
+export const styles = StyleSheet.create({
+  container: { flex: 1, alignItems:'center', gap: 160, padding: 12, backgroundColor: '#DDFF00' },
+  logoView: {marginTop: 180},
+  registerView: {padding: 2, gap: 10, height: 'auto', width: '100%'},
+  btns: {flexDirection: 'row', width: '100%', gap: 5, justifyContent: 'center', alignContent: 'center'}
 });

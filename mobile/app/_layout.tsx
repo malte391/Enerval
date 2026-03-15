@@ -1,26 +1,28 @@
 import { useEffect } from 'react';
 import { Slot, useRouter, useSegments } from 'expo-router';
-import { AuthProvider, useAuth } from '../context/AuthContext';
+import { AuthContextType, AuthProvider, useAuth } from '../context/AuthContext';
 
 function AuthGate() {
-  const { session, loading } = useAuth();
+  const { session, loading, hasProfile } : AuthContextType = useAuth()
   const router = useRouter();
   const segments = useSegments();
 
   useEffect(() => {
     if (loading) return;
-
     const inTabsGroup = segments[0] === '(tabs)';
+    const inCheckin = segments[0] === 'checkIn';
 
-    if (!session && inTabsGroup) {
+    if (!session) {
       router.replace('/login');
-    } else if (session && !inTabsGroup) {
-      router.replace('/(tabs)');         
+    } else if (session && !hasProfile) {
+      router.replace('/checkIn')
+    } else if (session){
+      router.replace('/(tabs)')
     }
-  }, [session, loading]);
+  }, [session, loading, hasProfile]);
 
   return <Slot />;
-}
+} 
 
 export default function RootLayout() {
   return (

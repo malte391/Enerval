@@ -1,5 +1,5 @@
 import { getSignedInUser } from "@/supabase/auth"
-import { supabase } from "@/supabase/supabasetest"
+import { supabase } from "@/supabase/supabasepublic"
 import { User } from "@supabase/supabase-js"
 
 

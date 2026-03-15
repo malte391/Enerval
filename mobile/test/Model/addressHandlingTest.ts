@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { createNewAdress, getSignedInUsersAddresses } from "@/model/Addresses/addressHandling"
-import { supabase } from "../../supabase/supabasetest"
+import { createNewAdress } from "@/model/Addresses/addressHandling"
 import { testUser, signIn } from '../testData';
+import { checkThatCityExists } from '@/utils/addressValidation';
 
 const testAddress = {
   country: "Germany",
@@ -15,7 +15,7 @@ const testAddress = {
 
 async function testCreateNewAddressForSignedInUser() {
     await signIn()
-    createNewAdress("Germany", "80331", "München", "Marienplatz", 1, "b", "Around the corner. Meter under the incoming stairs.'")
+    createNewAdress("Germany", "80331", "München", "Marienplatz", '1', "Around the corner. Meter under the incoming stairs.'")
 }
 
 async function testOpenStreetMapApi(postalCode:string) {
@@ -28,10 +28,9 @@ async function testOpenStreetMapApi(postalCode:string) {
     }
 }
 
-async function testGetAddresses(){
-    await signIn()
-    const addresses = await getSignedInUsersAddresses()
-    console.log(addresses)
+
+async function testCheckThatCityExists(city : string) {
+    console.log(await checkThatCityExists(city))
 }
 
-testGetAddresses()
+testCreateNewAddressForSignedInUser()

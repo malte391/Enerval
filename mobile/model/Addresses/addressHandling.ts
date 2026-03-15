@@ -1,5 +1,5 @@
 import { User } from "@supabase/supabase-js"
-import { supabase } from "../../supabase/supabasetest"
+import { supabase } from "../../supabase/supabasepublic"
 import { authentificateAddress } from "../../utils/addressValidation"
 import { getSignedInUser } from "@/supabase/auth"
 
@@ -8,8 +8,7 @@ export async function createNewAdress(
     postalCode : string, 
     city : string, 
     street : string, 
-    housenr : number, 
-    additional? : string, 
+    housenr : string,  
     remarks? : string) : Promise<void> {
         
         try {
@@ -24,7 +23,6 @@ export async function createNewAdress(
                         city: city,
                         street: street,
                         house_nr: housenr,
-                        additional: additional,
                         remarks: remarks,
                         belongs_to: user.id
                     },
@@ -38,13 +36,12 @@ export async function createNewAdress(
         }
     } 
 
-export async function getSignedInUsersAddresses() {
-    const userId = (await getSignedInUser()).id
+export async function getAddressesByUserId(uuid : string) {
 
     const { data: Addresses, error } = await supabase
         .from('Addresses')
         .select('country, postal_code, city, street, additional')
-        .eq('belongs_to', userId)
+        .eq('belongs_to', uuid)
     if(error) throw new Error('Error getting users address')
     return Addresses
 }
