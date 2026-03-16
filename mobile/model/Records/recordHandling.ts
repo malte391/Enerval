@@ -36,7 +36,7 @@ export const getAllRecordsOfAMeter = async (meterNumber : string) : Promise<any>
             .select('value')
             .eq('created_by', userId)
             .eq('meter', meterNumber)
-        if(error) throw new Error(`Error getting records for user ${userId}`)
+        if(error) throw new Error(`Couldn't get records`)
         return Records
     }
     else throw new Error('Meter does not exist')
