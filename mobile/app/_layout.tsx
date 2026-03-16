@@ -13,8 +13,11 @@ function AuthGate() {
     router.replace('/(tabs)' as any)
     const inTabsGroup = segments[0] === '(tabs)';
     const inCheckin = segments[0] === 'checkIn';
+    const inLogIn = segments[0] === 'login'
 
+    router.replace('/login' as any)
 
+    if(inLogIn && session) {router.replace('/(tabs)/(home)')}
     if (!session) {
       router.replace('/login' as any);
     } else if (session){

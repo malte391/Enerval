@@ -1,8 +1,12 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
+import { useState } from 'react';
+
 
 export default function TabLayout() {
+
+
   return (
     <Tabs
       screenOptions={{
@@ -22,6 +26,17 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+          name="(scan)"
+          options={{
+            title: 'Scan',
+            tabBarIcon: ({color, size}) => (
+              <Ionicons name='scan' size={size} color={color}/>
+            ),
+          }}
+      />
+
       <Tabs.Screen
         name="(settings)"
         options={{
@@ -31,6 +46,7 @@ export default function TabLayout() {
           ),
         }}
       />
+
     </Tabs>
   );
 }
