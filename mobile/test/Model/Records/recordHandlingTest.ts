@@ -1,5 +1,5 @@
-import { createNewRecord, getAllRecordsOfAMeter } from "@/model/Records/recordHandling";
-import { signIn, testMeter } from "../testData";
+import { createNewRecord, getAllRecordsOfAMeter, getRecordsForMonth } from "@/model/Records/recordHandling";
+import { signIn, testMeter } from "../../testData";
 
 async function testUnavailableMeterNumber() {
     await signIn()
@@ -22,6 +22,11 @@ async function testGetAllRecords() {
     Object.values(records).forEach(record => {
         console.log(record.value);
     });
+}
+
+async function testGetMonthRecords() {
+    const data = await getRecordsForMonth('09487mce', 3, 26)
+    console.log(data)
 }
 
 testGetAllRecords()

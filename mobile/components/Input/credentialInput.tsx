@@ -11,6 +11,9 @@ type Props = {
 };
 
 export default function CredentialInput({ label, value, onChangeText, placeholder }: Props) {
+
+  const [focus, setFocus] = useState<boolean>(false)
+
     const {width} = useWindowDimensions()
     return (
         <View style={styles.container}>
@@ -22,6 +25,8 @@ export default function CredentialInput({ label, value, onChangeText, placeholde
             placeholder={placeholder}
             autoCapitalize="none"
             placeholderTextColor="hsla(68, 100%, 50%, 0.80)"
+            onFocus={() => setFocus(true)}
+            onBlur={() => setFocus(false)}
             />
         </View>
   );

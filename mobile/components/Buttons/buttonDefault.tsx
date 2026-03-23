@@ -15,11 +15,14 @@ export default function DefaultButton({label, onPress} : ButtonProps) {
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'black',
-        height: 40,
-        padding: 14,
-        borderRadius: 14,
-        paddingHorizontal: 16
+        flex: 1,
+        borderWidth: 0,
+        minHeight: 55,
+        backgroundColor: 'black',
+        borderRadius: 8,
+        padding: 16,
+        alignItems:'center',
+        justifyContent: 'center'
     },
     text:{
         fontFamily: 'Avenir Next',

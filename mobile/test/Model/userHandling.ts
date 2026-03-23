@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { createNewProfile } from '@/model/User/userHandling.ts';
+import { checkProfileExists, createNewProfile } from '@/model/User/userHandling';
 import { supabase } from '../../supabase/supabasetest.js';
 
 const user = {
@@ -24,4 +24,9 @@ async function testSignInAndCreationOfProfile () {
     await createNewProfile(user.firstName,user.lastName)
 }
 
-testSignInAndCreationOfProfile()
+async function testCheckProfileExitst(id: string) {
+    const profileExists = await checkProfileExists(id)
+    console.log(profileExists)
+}
+
+testCheckProfileExitst('2427c354-0c3b-442f-9cfa-ec23d4238df1')

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image, useWindowDimensions } from 'react-native';
-import { supabase } from '../supabase/supabasepublic';
 import { useRouter } from 'expo-router';
 import LoginButton from '@/components/Buttons/loginButton';
 import AuthInput from '@/components/Input/authInput';
 import React from 'react';
+import { signUp } from '@/model/User/sessions';
 
 export default function RegisterScreen() {
   const [email, setEmail] = useState<string>('');
@@ -17,7 +17,7 @@ export default function RegisterScreen() {
 
   async function handleRegister() {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
+    const { error } = await signUp(email, password)
     if (error) {
       setButtonColor(() => '#FF2323')
       setLabel(() => 'Error! Try Again')

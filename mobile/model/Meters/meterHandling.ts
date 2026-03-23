@@ -1,9 +1,7 @@
 import { getSignedInUser } from "@/supabase/auth"
-import { supabase } from "@/supabase/supabasetest"
+import { supabase } from "@/supabase/supabasepublic"
 import { User } from "@supabase/supabase-js"
-import { checkLocationExistsInDB } from "@/utils/locations"
 import { validateMeterInput } from "@/utils/meterValidation"
-import { Meter } from "@/types"
 
 export async function createNewMeter(meterNumber : string, name: string, locatedAt : string) : Promise<void> {
     
@@ -33,7 +31,6 @@ export async function createNewMeter(meterNumber : string, name: string, located
 
 export async function getUsersMeters() {
     const userId = (await getSignedInUser()).id
-    console.log(userId)
 
     const { data: Meters, error } = await supabase
         .from('Meters')

@@ -1,8 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet } from 'react-native';
-import { useState } from 'react';
-
 
 export default function TabLayout() {
 
@@ -14,7 +12,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: style.tabBarStyle,
         tabBarItemStyle: style.tabBarItemStyle,
-        tabBarLabelStyle: style.tabBarLabelStyle
+        tabBarLabelStyle: style.tabBarLabelStyle,
+        animation: 'shift'
       }}
     >
       <Tabs.Screen
@@ -58,7 +57,7 @@ const style = StyleSheet.create({
     height: 64,
     borderRadius: 32,
     backgroundColor: '#ffffff',
-    borderTopWidth: 0,           // removes the default top border
+    borderTopWidth: 0,
     elevation: 0,                // removes Android shadow
     shadowColor: '#000',
     borderColor: '#DDFF00',

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image, useWindowDimensions } from 'react-native';
-import { supabase } from '../supabase/supabasepublic';
 import { useRouter } from 'expo-router';
 import AuthInput from '@/components/Input/authInput';
 import LoginButton from '@/components/Buttons/loginButton';
+import { signIn } from '@/model/User/sessions';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState<string>('');
@@ -14,7 +15,7 @@ export default function LoginScreen() {
 
   async function handleLogin() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await signIn(email, password)
     if (error) Alert.alert('Login failed', error.message);
     setLoading(false);
   }

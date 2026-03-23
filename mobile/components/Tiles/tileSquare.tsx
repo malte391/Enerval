@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { TILE_WIDTH, TILE_HEIGHT } from '@/app/contants/tileConstants'
+import { TILE_WIDTH, TILE_HEIGHT } from '@/contants/tileConstants'
 
 
 type TileProps = {
@@ -32,7 +32,7 @@ const style = StyleSheet.create({
         padding: 12, 
         paddingRight: 16, 
         borderRadius: 12, 
-        shadowColor: '#f5e642',
+        shadowColor: '#999999',
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.5,
         shadowRadius: 2,

@@ -11,16 +11,16 @@ export default function TextSwoosh({line1, line2} : SwooshProps){
             <View style={style.textContainer}>
                 <Text style={style.text}>{line1}</Text>
             </View>
-            <View style={style.textContainer}>
+            {line2 && <View style={style.textContainer}>
                 <Text style={style.text}>{line2}</Text>
-            </View>
+            </View>}
 
         </View>
     )
 }
 
 const style = StyleSheet.create({
-    container: {flex: 1, paddingHorizontal: 18, gap: 4}, 
-    textContainer: {alignSelf: 'flex-start', backgroundColor: 'black', paddingVertical: 12, paddingLeft: 18, paddingRight: 28},
-    text: {fontWeight: 'bold', textAlign: 'left', color: '#DDFF00', fontSize: 24}
+    container: {flex: 1, paddingHorizontal: 18, gap: 5}, 
+    textContainer: {alignSelf: 'flex-start', backgroundColor: '#DDFF00', paddingVertical: 4, paddingLeft: 18, paddingRight: 18},
+    text: {fontWeight: 'bold', textAlign: 'left', color: '#000000', fontSize: 26}
 })

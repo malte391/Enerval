@@ -3,10 +3,11 @@ import CredentialInput from "@/components/Input/credentialInput";
 import { useAuth } from "@/context/AuthContext";
 import { provideCityByPostalCode } from "@/model/Addresses/addressAPI";
 import { createNewAdress } from "@/model/Addresses/addressHandling";
+import { signOut } from "@/model/User/sessions";
 import { createNewProfile } from "@/model/User/userHandling";
-import { supabase } from "@/supabase/supabasepublic";
 import { validatePostalCode } from "@/utils/addressValidation";
 import { guessFirstName, guessLastName } from "@/utils/checkIn";
+import React, { use } from "react";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, useWindowDimensions, View, Text, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 
@@ -59,13 +60,18 @@ export default function CheckIn() {
     const [remarks, setRemarks] = useState<string>('')
     const [meter, setMeter] = useState<string>('')
     const [meterName, setMeterName] = useState<string>('')
+    const { refetchProfile } = useAuth()
+
+    const [loading, setLoading] = useState<boolean>(false);
 
     const {width} = useWindowDimensions()
 
     async function handleSubmit() : Promise<void>{
+        setLoading(true)
         try {
             await createNewProfile(firstName, lastName)
             await createNewAdress(country, postalCode, city, street, houseNr, remarks)
+            refetchProfile()
         } catch (error) {
             console.log(error)
         }
@@ -136,7 +142,8 @@ export default function CheckIn() {
                     <CredentialInput label={labelsGer.meterName} value={meterName} onChangeText={setMeterName} placeholder={labelsGer.meterName}/>
                 </View>
                 <View style={styles.submit}>
-                    <SubmitButton label='Profil erstellen' onPress={handleSubmit}/>
+                    <SubmitButton label={`${!loading ? 'Profil erstellen' : '...'}`} onPress={handleSubmit}/>
+                    <SubmitButton label='Sign out' onPress={() => signOut()}/>
                 </View>
             </View>
         </ScrollView>  
@@ -155,5 +162,5 @@ export default function CheckIn() {
         streetRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, width: '100%', marginBottom: 4 },
         nameInput: {width: '48%'},
         inputRows: {width: '100%', gap: 4, marginBottom: 12 },
-        submit: {width: '100%'}
+        submit: {width: '100%', gap: 12}
     });

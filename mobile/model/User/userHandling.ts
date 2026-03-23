@@ -1,3 +1,4 @@
+import { Database } from "@/database.types"
 import { getSignedInUser } from "@/supabase/auth"
 import { supabase } from "@/supabase/supabasepublic"
 import { User } from "@supabase/supabase-js"
@@ -23,6 +24,19 @@ export const createNewProfile = async (firstName : string, lastName : string) : 
     } catch (e) {
         throw new Error('Error creating new Profile' + e)
     }
+}
+
+export const checkProfileExists = async (userId: string) : Promise<boolean> => {
+    const {data, error} = await supabase
+      .from('Profiles')
+      .select('id')
+      .eq('id', userId)
+      .single();
+
+      console.log(data)
+
+      if (error) return false
+    return data !== null
 }
 
 

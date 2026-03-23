@@ -1,13 +1,14 @@
 import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native'
-import { WIDTH, GAP, GRID_PADDING, TILE_WIDTH, TILE_HEIGHT } from '@/app/contants/tileConstants'
+import { WIDTH, GAP, GRID_PADDING, TILE_WIDTH, TILE_HEIGHT } from '@/contants/tileConstants'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import type { Href } from 'expo-router'
-import TextSwoosh from '@/components/Brand/welcomeSwoosh'
+import TextSwoosh from '@/components/Text/welcomeSwoosh'
 import { supabase } from '@/supabase/supabasepublic'
 import { getSignedInUser } from '@/supabase/auth'
 import { useEffect, useState } from 'react'
 import MonthlyConsumptionTile from '@/components/Tiles/monthlyConsumtionTile'
+import { useAuth } from '@/context/AuthContext'
 
 const tiles: { label: string; route: Href }[] = [
 
@@ -16,23 +17,15 @@ const tiles: { label: string; route: Href }[] = [
 
 export default function HomeScreen() {
 
+    const {profile} = useAuth()
+    const {session} = useAuth()
     const [firstName, setFirstName] = useState<string | null>(null)
-    
-    async function  getFirstName() : Promise<string | null> {
-        const user = await getSignedInUser()
-        const userId: string = user.id
-        const {data: userName, error} = await supabase
-        .from('Profiles')
-        .select('first_name')
-        .eq('id', userId)
-        .single<{ first_name: string }>()
-
-        return userName?.first_name ?? null
-    }
 
     useEffect(() => {
-        getFirstName().then(name => setFirstName(name))
-    }, [])
+        if (!profile) return
+        setFirstName(profile.first_name)
+        console.log(profile.first_name)
+    }, [session, profile])
 
 
   return (
@@ -40,9 +33,9 @@ export default function HomeScreen() {
         style={styles.root}
         edges={['top']}
     >
-        <ScrollView style={{flex: 1}} contentContainerStyle={styles.container}>
+        <ScrollView style={{flex: 1}} contentContainerStyle={styles.view}>
             <View style={styles.swoosh}>
-                <TextSwoosh line1={`Welcome to Enerval ${firstName ? `,` : ''}`} line2={`${firstName ? `${firstName}!` : null}`}/>
+                {firstName && <TextSwoosh line1={`Welcome to Enerval,`} line2={`${firstName}!`}/>}
             </View>
             <View style={styles.gridWrapper}>
                 <View style={styles.grid}>
@@ -68,9 +61,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-    root: {flex: 1},
-    container: {width: '100%', gap: 50, marginTop: 44 },
-    swoosh: {paddingLeft: 20, paddingRight: 50},
+    root: {flex: 1, backgroundColor: '#efefef'},
+    view: {width: '100%', gap: 50, marginTop: 44 },
+    swoosh: {paddingLeft: 20, paddingRight: 20},
     gridWrapper: {
         alignItems: 'center',
         width: '100%',
