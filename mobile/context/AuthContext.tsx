@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/supabase/supabasepublic';
 import { checkProfileExists } from '@/model/User/userHandling';
-import { Profile } from '@/app/types';
+import { Profile } from '@/types';
 
 export type AuthContextType = {
   session: Session | null;

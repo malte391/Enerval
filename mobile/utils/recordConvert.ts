@@ -1,4 +1,4 @@
 
-export const recordAsNumber = (record: string): number => parseInt(record, 10)
+export const recordAsNumber = (record: string|null): number => record==null ? 0 : parseInt(record, 10)
 
 

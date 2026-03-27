@@ -1,0 +1,55 @@
+import React, {createContext, useContext, useEffect, useMemo, useState} from "react";
+import {Address, Meter, Records} from "@/types";
+import {getUsersMeters} from "@/model/Meters/meterHandling";
+import {getAllRecordsOfAMeter} from "@/model/Records/recordHandling";
+import {getUsersAddress} from "@/model/Addresses/addressHandling";
+
+
+export type ProfileContextType = {
+    meters: Pick<Meter, 'meter_number' | 'location'>[];
+    address: Address|null;
+    records: Pick<Records, 'created_at' | 'value' | 'meter'>[];
+}
+
+const ProfileContext = createContext<ProfileContextType>({
+    meters: [],
+    address: null,
+    records: []
+});
+
+export function ProfileProvider({ children }: { children: React.ReactNode }) {
+    const [meters, setMeters] = useState<Pick<Meter, 'meter_number' | 'location'>[]>([]);
+    const [address, setAddress] = useState<Address|null>(null);
+    const [records, setRecords] = useState<Pick<Records, 'created_at' | 'value' | 'meter'>[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        getUsersMeters().then(setMeters);
+        getUsersAddress().then(setAddress);
+    }, []);
+
+    useEffect(() => {
+        if (meters.length === 0) return;
+
+        Promise.all(
+            meters.map(m =>
+                getAllRecordsOfAMeter(m.meter_number)
+            )
+        ).then(results => {
+            setRecords(results.flat());
+        });
+    }, [meters]);
+
+    const memo = useMemo(
+        () => ({ meters, address, records }),
+        [meters, address, records]
+    );
+
+    return (
+        <ProfileContext.Provider value={memo}>
+            {children}
+        </ProfileContext.Provider>
+    )
+}
+
+export const useProfile = () => useContext(ProfileContext);

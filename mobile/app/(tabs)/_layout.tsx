@@ -1,54 +1,57 @@
 import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet } from 'react-native';
 
 export default function TabLayout() {
 
+    return (
+        <ProfileProvider>
+            <Tabs
+                screenOptions={{
+                    tabBarActiveTintColor: 'black', // change to your brand color
+                    headerShown: false,
+                    tabBarStyle: style.tabBarStyle,
+                    tabBarItemStyle: style.tabBarItemStyle,
+                    tabBarLabelStyle: style.tabBarLabelStyle,
+                    animation: 'shift'
+                }}
+            >
+                <Tabs.Screen
+                    name="(home)"
+                    options={{
+                        title: 'Home',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="home" size={size} color={color} />
+                        ),
+                    }}
+                />
 
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: 'black', // change to your brand color
-        headerShown: false,
-        tabBarStyle: style.tabBarStyle,
-        tabBarItemStyle: style.tabBarItemStyle,
-        tabBarLabelStyle: style.tabBarLabelStyle,
-        animation: 'shift'
-      }}
-    >
-      <Tabs.Screen
-        name="(home)"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
-          ),
-        }}
-      />
+                <Tabs.Screen
+                    name="(scan)"
+                    options={{
+                        title: 'Scan',
+                        tabBarIcon: ({color, size}) => (
+                            <Ionicons name='scan' size={size} color={color}/>
+                        ),
+                    }}
+                />
 
-      <Tabs.Screen
-          name="(scan)"
-          options={{
-            title: 'Scan',
-            tabBarIcon: ({color, size}) => (
-              <Ionicons name='scan' size={size} color={color}/>
-            ),
-          }}
-      />
+                <Tabs.Screen
+                    name="(profile)"
+                    options={{
+                        title: 'Profile',
+                        tabBarIcon: ({ color, size }) => (
+                            <Ionicons name="settings-outline" size={size} color={color} />
+                        ),
+                    }}
+                />
 
-      <Tabs.Screen
-        name="(profile)"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings-outline" size={size} color={color} />
-          ),
-        }}
-      />
-
-    </Tabs>
-  );
+            </Tabs>
+        </ProfileProvider>
+);
 }
+import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
+
+import {ProfileProvider} from "@/context/ProfileContext";
 const style = StyleSheet.create({
   tabBarStyle: {
     position: 'absolute',        // lifts it off the bottom

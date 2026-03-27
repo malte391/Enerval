@@ -1,12 +1,9 @@
 import { Database } from "@/database.types";
 import { getSignedInUser } from "@/model/User/auth";
 import { supabase } from "@/supabase/supabasepublic";
-import { recordAsNumber } from "@/utils/recordConvert";
-
+import {Records} from "@/types";
 import { appendRecord, checkThatMeterExistsInDB, validateRecord } from "@/utils/energyRecordValidator";
 import { sumRecords } from "./recordAccumulation";
-
-type Record = Database['public']['Tables']['Records']['Row']
 
 export async function createNewRecord(value : string, meterNumber : string) {
     
@@ -34,7 +31,21 @@ export async function createNewRecord(value : string, meterNumber : string) {
     }
 }
 
-export const getAllRecordsOfAMeter = async (meterNumber : string) : Promise<{ value: string }[]> => {
+export const getAllRecordsOfAMeter = async (meterNumber : string) :
+    Promise<Pick<Records, 'value' | 'created_at' | 'meter'>[]> => {
+    if(await checkThatMeterExistsInDB(meterNumber)) {
+        const {data: Records, error } = await supabase
+            .from('Records')
+            .select('value, created_at, meter')
+            .eq('meter', meterNumber)
+        if(error) throw new Error(`Couldn't get records`)
+        return Records
+    }
+    else throw new Error('Meter does not exist')
+}
+
+export const getAllRecordValuesOfAMeter = async (meterNumber : string) :
+    Promise<Pick<Records, 'value'>[]> => {
     if(await checkThatMeterExistsInDB(meterNumber)) {
         const {data: Records, error } = await supabase
             .from('Records')

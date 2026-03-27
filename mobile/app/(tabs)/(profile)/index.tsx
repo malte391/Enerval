@@ -5,16 +5,20 @@ import {useEffect, useState} from "react";
 import {useAuth} from "@/context/AuthContext";
 import CpHeader2 from "@/components/Text/CpHeader2";
 import CpMenuButton from "@/components/Buttons/Settings/CpMenuButton";
-
+import CpSubHeader from "@/components/Text/CpSubHeader";
+import {router} from "expo-router";
+import {signOut} from "@/model/User/sessions";
 
 export default function ProfileScreen() {
 
-    const [firstName, setFirstName] = useState<String>()
+    const [firstName, setFirstName] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
     const {profile} = useAuth()
 
     useEffect(() => {
         if (!profile) return
-        setFirstName(profile.first_name)
+        setFirstName(profile.first_name!)
+        setEmail(profile.email!)
     }, []);
 
     return (
@@ -22,8 +26,16 @@ export default function ProfileScreen() {
         <ScrollView style={{flex: 1}} contentContainerStyle={styles.container}>
             <CpHeaderSwoosh line1='Profile' />
             <View style={styles.view}>
-                <CpHeader2 text={firstName}/>
-                <CpMenuButton icon='IconMeter' label='Zähler verwalten' onPress={() => console.log('pressed')} />
+                <View style={styles.subhead}>
+                    <CpHeader2 text={firstName}/>
+                    <CpSubHeader text={email} />
+                </View>
+                <CpMenuButton icon='user' label='Deine Daten anpassen' onPress={() => router.push('/ModSetUser')} />
+                <CpMenuButton icon='contract' label='Verträge verwalten' onPress={() => router.push('/ModSetContracts')} />
+                <CpMenuButton icon='meter' label='Zähler verwalten' onPress={() => router.push('/ModSetMeters')} />
+            </View>
+            <View style={[styles.bottom, styles.view]}>
+                <CpMenuButton icon='signOut' label='Abmelden' onPress={() => signOut()} iconColor={'darkred'} fontColor={'darkred'} />
             </View>
         </ScrollView>
     </SafeAreaView>
@@ -33,5 +45,7 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
     root: {flex: 1, backgroundColor: '#efefef'},
     container: {gap: 40, marginTop: 40 },
-    view: {alignItems: 'center', gap: 15, paddingHorizontal: 30},
+    view: {alignItems: 'center', gap: 25, paddingHorizontal: 35},
+    subhead: {alignItems: 'center'},
+    bottom: {marginTop: 50},
 })

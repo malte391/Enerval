@@ -10,6 +10,7 @@ import { guessFirstName, guessLastName } from "@/utils/checkIn";
 import React, { use } from "react";
 import { useEffect, useState } from "react";
 import { Image, StyleSheet, useWindowDimensions, View, Text, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
+import {createNewMeter} from "@/model/Meters/meterHandling";
 
 
 const welcomeTextEngl = {
