@@ -1,5 +1,5 @@
 import { Database } from "@/database.types";
-import { getSignedInUser } from "@/supabase/auth";
+import { getSignedInUser } from "@/model/User/auth";
 import { supabase } from "@/supabase/supabasepublic";
 import { recordAsNumber } from "@/utils/recordConvert";
 

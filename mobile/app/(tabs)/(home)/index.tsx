@@ -3,11 +3,11 @@ import { WIDTH, GAP, GRID_PADDING, TILE_WIDTH, TILE_HEIGHT } from '@/contants/ti
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import type { Href } from 'expo-router'
-import TextSwoosh from '@/components/Text/welcomeSwoosh'
+import CpHeaderSwoosh from '@/components/Text/CpHeaderSwoosh'
 import { supabase } from '@/supabase/supabasepublic'
-import { getSignedInUser } from '@/supabase/auth'
+import { getSignedInUser } from '@/model/User/auth'
 import { useEffect, useState } from 'react'
-import MonthlyConsumptionTile from '@/components/Tiles/monthlyConsumtionTile'
+import CpMonthlyConsumptionTile from '@/components/Tiles/monthlyConsumtionTile'
 import { useAuth } from '@/context/AuthContext'
 
 const tiles: { label: string; route: Href }[] = [
@@ -24,7 +24,6 @@ export default function HomeScreen() {
     useEffect(() => {
         if (!profile) return
         setFirstName(profile.first_name)
-        console.log(profile.first_name)
     }, [session, profile])
 
 
@@ -34,22 +33,20 @@ export default function HomeScreen() {
         edges={['top']}
     >
         <ScrollView style={{flex: 1}} contentContainerStyle={styles.view}>
-            <View style={styles.swoosh}>
-                {firstName && <TextSwoosh line1={`Welcome to Enerval,`} line2={`${firstName}!`}/>}
-            </View>
+            {firstName && <CpHeaderSwoosh line1={`Welcome to Enerval,`} line2={`${firstName}!`}/>}
             <View style={styles.gridWrapper}>
                 <View style={styles.grid}>
                     <View style={styles.tileWrapper}>
-                        <MonthlyConsumptionTile />
+                        <CpMonthlyConsumptionTile />
                     </View>
                     <View>
-                        <MonthlyConsumptionTile />
+                        <CpMonthlyConsumptionTile />
                     </View>
                     <View>
-                        <MonthlyConsumptionTile />
+                        <CpMonthlyConsumptionTile />
                     </View>
                     <View>
-                        <MonthlyConsumptionTile />
+                        <CpMonthlyConsumptionTile />
                     </View>
                 </View>
 
@@ -63,7 +60,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     root: {flex: 1, backgroundColor: '#efefef'},
     view: {width: '100%', gap: 50, marginTop: 44 },
-    swoosh: {paddingLeft: 20, paddingRight: 20},
     gridWrapper: {
         alignItems: 'center',
         width: '100%',

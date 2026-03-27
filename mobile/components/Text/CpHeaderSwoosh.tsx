@@ -5,7 +5,7 @@ type SwooshProps = {
     line2?: string
 }
 
-export default function TextSwoosh({line1, line2} : SwooshProps){
+export default function CpHeaderSwoosh({line1, line2} : SwooshProps){
     return (
         <View style={style.container}>
             <View style={style.textContainer}>
@@ -20,7 +20,7 @@ export default function TextSwoosh({line1, line2} : SwooshProps){
 }
 
 const style = StyleSheet.create({
-    container: {flex: 1, paddingHorizontal: 18, gap: 5}, 
+    container: {flex: 1, paddingHorizontal: 30, gap: 5},
     textContainer: {alignSelf: 'flex-start', backgroundColor: '#DDFF00', paddingVertical: 4, paddingLeft: 18, paddingRight: 18},
     text: {fontWeight: 'bold', textAlign: 'left', color: '#000000', fontSize: 26}
 })

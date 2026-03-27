@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { checkProfileExists, createNewProfile } from '@/model/User/userHandling';
-import { supabase } from '../../supabase/supabasetest.js';
+import { supabase } from '@/supabase/supabasepublic';
 
 const user = {
     email: 'malte1771943596502@abc123.com',

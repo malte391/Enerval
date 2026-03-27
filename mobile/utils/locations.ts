@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase/supabasetest"
+import { supabase } from "@/supabase/supabasepublic"
 
 export const checkLocationExistsInDB = async (id : string) : Promise<boolean> => {
     const { data: addresses, error } = await supabase

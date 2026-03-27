@@ -1,3 +1,4 @@
+import { getAllRecordsOfAMeter } from "@/model/Records/recordHandling";
 import { useState } from "react"
 import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -12,13 +13,12 @@ export default function MonthQuartalSwitch({value, onSwitch} : MonthQuartalSwitc
 
     const monthSelected = value
     const quartalSelected = !value
-    
 
 
     return(
         <View style={styles.container}>
             <Pressable style={[styles.button, {
-                    backgroundColor : monthSelected ? 'hsla(68, 100%, 50%, 0.50)' : 'hsla(60, 2%, 88%, 0.88)',
+                    backgroundColor : monthSelected ? 'hsla(0, 0%, 69%, 0.50)' : 'hsla(60, 2%, 88%, 0.88)',
                     borderWidth: monthSelected ? 1 : 0
                 }]}
                 onPress={onSwitch}>
@@ -27,7 +27,7 @@ export default function MonthQuartalSwitch({value, onSwitch} : MonthQuartalSwitc
                 }]}>M</Text>
             </Pressable>
             <Pressable style={[styles.button, {
-                    backgroundColor : quartalSelected ? 'hsla(68, 100%, 50%, 0.50)' : 'hsla(60, 2%, 88%, 0.88)',
+                    backgroundColor : quartalSelected ? 'hsla(0, 0%, 69%, 0.50)' : 'hsla(60, 2%, 88%, 0.88)',
                     borderWidth: quartalSelected ? 1 : 0
                 }]}
                 onPress={onSwitch}>
@@ -41,6 +41,6 @@ export default function MonthQuartalSwitch({value, onSwitch} : MonthQuartalSwitc
 
 const styles = StyleSheet.create({
     container: {flexDirection: 'row', gap: 1},
-    button: {backgroundColor: 'hsla(60, 2%, 88%, 0.88)', alignItems: 'center', justifyContent: 'center', height: 35, width: 35, borderRadius: 3, borderColor: '#5d5c5c'},
+    button: {backgroundColor: 'hsla(60, 2%, 88%, 0.88)', alignItems: 'center', justifyContent: 'center', height: 35, width: 35, borderRadius: 4, borderColor: '#5d5c5c'},
     text: {color: 'black', textAlign: 'center', fontSize: 14}
 })

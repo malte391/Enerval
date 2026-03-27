@@ -1,7 +1,7 @@
 import { User } from "@supabase/supabase-js"
 import { supabase } from "../../supabase/supabasepublic"
 import { authentificateAddress } from "../../utils/addressValidation"
-import { getSignedInUser } from "@/supabase/auth"
+import { getSignedInUser } from "@/model/User/auth"
 
 export async function createNewAdress( 
     country : string, 

@@ -1,5 +1,5 @@
-import SubmitButton from "@/components/Buttons/loginButton";
-import CredentialInput from "@/components/Input/credentialInput";
+import SubmitButton from "@/components/Buttons/CpLoginButton";
+import CredentialInput from "@/components/Input/CpCredentialInput";
 import { useAuth } from "@/context/AuthContext";
 import { provideCityByPostalCode } from "@/model/Addresses/addressAPI";
 import { createNewAdress } from "@/model/Addresses/addressHandling";

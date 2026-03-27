@@ -17,7 +17,7 @@ vi.mock('../../utils/addressValidation', () => ({
 }))
 
 import { supabase } from '../../supabase/supabasepublic'
-import { getSignedInUser } from '@/supabase/auth'
+import { getSignedInUser } from '@/model/User/auth'
 import { authentificateAddress } from '../../utils/addressValidation'
 
 const mockUser = { id: 'user-123' }

@@ -1,4 +1,4 @@
-import { supabase } from "@/supabase/supabasetest";
+import { supabase } from "@/supabase/supabasepublic";
 
 export const validateRecord = (record: string): boolean => {
     const value = Number(record);

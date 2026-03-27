@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { View, TextInput, Button, Text, StyleSheet, Alert, Image, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
-import LoginButton from '@/components/Buttons/loginButton';
-import AuthInput from '@/components/Input/authInput';
+import LoginButton from '@/components/Buttons/CpLoginButton';
+import AuthInput from '@/components/Input/CpAuthInput';
 import React from 'react';
 import { signUp } from '@/model/User/sessions';
 

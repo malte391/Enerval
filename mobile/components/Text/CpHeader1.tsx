@@ -4,7 +4,7 @@ type HeaderProps = {
     text: string;
 }
 
-export default function Header2({text = 'Title'}: HeaderProps) {
+export default function CpHeader1({text = 'Title'}: HeaderProps) {
 
     return (
         <View style={styles.container}>
@@ -14,6 +14,6 @@ export default function Header2({text = 'Title'}: HeaderProps) {
 }
 
 const styles = StyleSheet.create({
-    container: {padding: 14},
-    text: {fontFamily: 'Helvetica-Neue', fontSize: 20, fontWeight: '600'}
+    container: {paddingVertical: 20},
+    text: {fontFamily: 'Helvetica-Neue', fontSize: 24, fontWeight: 'bold'}
 })
