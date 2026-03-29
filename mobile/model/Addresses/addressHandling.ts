@@ -4,7 +4,7 @@ import { authentificateAddress } from "@/utils/addressValidation"
 import { getSignedInUser } from "@/model/User/auth"
 import {Address} from "@/types";
 
-export async function createNewAdress( 
+export async function createNewAddress(
     country : string, 
     postalCode : string, 
     city : string, 
@@ -13,6 +13,7 @@ export async function createNewAdress(
     remarks? : string) : Promise<void> {
 
     const user = await getSignedInUser()
+    if (!user) {throw new Error('User missing')}
     try {
         await authentificateAddress(country, postalCode, city, street, housenr)
     } catch (e) {
@@ -28,7 +29,7 @@ export async function createNewAdress(
                 street: street,
                 house_nr: housenr,
                 remarks: remarks,
-                belongs_to: user.id
+                belongs_to: user!.id
             },
         ])
         .select()
@@ -40,11 +41,12 @@ export async function createNewAdress(
 export async function getUsersAddress() : Promise<Address> {
 
     const user = await getSignedInUser()
+    if (!user) {throw new Error('User missing')}
 
     const { data: Address, error } = await supabase
         .from('Addresses')
         .select('*')
-        .eq('belongs_to', user.id)
+        .eq('belongs_to', user!.id)
         .single()
     if(error) throw new Error('Error getting users address')
     return Address

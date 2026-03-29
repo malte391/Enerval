@@ -28,7 +28,6 @@ export default function ModConsumptionView() {
     useEffect(() => {
         async function totalConsumption() {
             const meters = await getUsersMeters()
-            console.log(meters)
             if (meters && meters.length != 0) {
                 const recordsOfMeter = await getAllRecordValuesOfAMeter(meters[0].meter_number)
                 const sum = sumRecords(recordsOfMeter)

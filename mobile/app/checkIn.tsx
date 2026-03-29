@@ -2,7 +2,7 @@ import SubmitButton from "@/components/Buttons/CpLoginButton";
 import CredentialInput from "@/components/Input/CpCredentialInput";
 import { useAuth } from "@/context/AuthContext";
 import { provideCityByPostalCode } from "@/model/Addresses/addressAPI";
-import { createNewAdress } from "@/model/Addresses/addressHandling";
+import { createNewAddress } from "@/model/Addresses/addressHandling";
 import { signOut } from "@/model/User/sessions";
 import { createNewProfile } from "@/model/User/userHandling";
 import { validatePostalCode } from "@/utils/addressValidation";
@@ -71,7 +71,7 @@ export default function CheckIn() {
         setLoading(true)
         try {
             await createNewProfile(firstName, lastName)
-            await createNewAdress(country, postalCode, city, street, houseNr, remarks)
+            await createNewAddress(country, postalCode, city, street, houseNr, remarks)
             refetchProfile()
         } catch (error) {
             console.log(error)

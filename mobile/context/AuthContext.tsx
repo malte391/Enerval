@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/supabase/supabasepublic';
 import { checkProfileExists } from '@/model/User/userHandling';
@@ -27,9 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null)
 
   async function checkProfile(userId: string) {
-    const profileExists = await checkProfileExists(userId)
-    setHasProfile(profileExists);
-    console.log(profile)
+    await checkProfileExists(userId).then((exists) => setHasProfile(exists));
   }
 
   async function getProfile(userId : string) {
@@ -43,39 +41,53 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return Profile?? null
   }
 
-  async function refetchProfile() {
-    if (session?.user.id) 
-      {
-        const userId = session!.user.id
-        checkProfile(userId);
-        getProfile(userId).then(profile => setProfile(profile))
-      }
-  }
+  const refetchProfile = useCallback(async () => {
+    if (session?.user.id) {
+      const userId = session!.user.id
+      await checkProfile(userId);
+      getProfile(userId).then(profile => setProfile(profile))
+    }
+  }, [session])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (session) {
         checkProfile(session.user.id);
-        getProfile(session.user.id).then(profile => setProfile(profile))
+        getProfile(session.user.id).then(profile => setProfile(() => profile))
       }
 
       setLoading(false);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setSession(session);
-        if (session) checkProfile(session.user.id);
-        else setHasProfile(false);
-      }
+        async (_event, session) => {
+          if (_event === 'INITIAL_SESSION') return;
+          setLoading(true);
+          setSession(session);
+          if (session) {
+            await Promise.all([
+              checkProfile(session.user.id),
+              getProfile(session.user.id).then(p => setProfile(p))
+            ]);
+          } else {
+            setHasProfile(false);
+            setProfile(null);
+          }
+          setLoading(false)
+        }
     );
 
     return () => subscription.unsubscribe();
   }, []);
 
+  const memo = useMemo(
+      () => ({ session, loading, hasProfile, refetchProfile, profile }),
+      [session, loading, hasProfile, profile]
+  )
+
   return (
-    <AuthContext.Provider value={{ session, loading, hasProfile, refetchProfile, profile }}>
+    <AuthContext.Provider value={memo}>
       {children}
     </AuthContext.Provider>
   );

@@ -33,8 +33,6 @@ export const checkProfileExists = async (userId: string) : Promise<boolean> => {
       .eq('id', userId)
       .single();
 
-      console.log(data)
-
       if (error) return false
     return data !== null
 }

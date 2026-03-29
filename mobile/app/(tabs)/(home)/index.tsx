@@ -19,7 +19,7 @@ export default function HomeScreen() {
 
     const {profile} = useAuth()
     const {session} = useAuth()
-    const [firstName, setFirstName] = useState<string | null>(null)
+    const [firstName, setFirstName] = useState<string | null>(profile?.first_name?? null)
 
     useEffect(() => {
         if (!profile) return

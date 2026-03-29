@@ -11,15 +11,7 @@ import {signOut} from "@/model/User/sessions";
 
 export default function ProfileScreen() {
 
-    const [firstName, setFirstName] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
     const {profile} = useAuth()
-
-    useEffect(() => {
-        if (!profile) return
-        setFirstName(profile.first_name!)
-        setEmail(profile.email!)
-    }, []);
 
     return (
     <SafeAreaView style={styles.root}>
@@ -27,8 +19,8 @@ export default function ProfileScreen() {
             <CpHeaderSwoosh line1='Profile' />
             <View style={styles.view}>
                 <View style={styles.subhead}>
-                    <CpHeader2 text={firstName}/>
-                    <CpSubHeader text={email} />
+                    <CpHeader2 text={profile?.first_name ?? ''}/>
+                    <CpSubHeader text={profile?.email ?? ''} />
                 </View>
                 <CpMenuButton icon='user' label='Deine Daten anpassen' onPress={() => router.push('/ModSetUser')} />
                 <CpMenuButton icon='contract' label='Verträge verwalten' onPress={() => router.push('/ModSetContracts')} />

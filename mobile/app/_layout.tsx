@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Slot, useRouter, useSegments } from 'expo-router';
-import { AuthContextType, AuthProvider, useAuth } from '../context/AuthContext';
+import { AuthContextType, AuthProvider, useAuth } from '@/context/AuthContext';
 import * as SplashScreen from 'expo-splash-screen'
 
 SplashScreen.preventAutoHideAsync()
@@ -12,13 +12,14 @@ function AuthGate() {
   const segments = useSegments();
 
   const profileLoaded = useCallback((): boolean => {
+    if (loading) return false
     if (hasProfile !== null) {
       if (hasProfile === true) {
         return profile !== null
       }
     }
     return hasProfile !== null
-  }, [hasProfile, profile])
+  }, [hasProfile, profile, loading])
 
   useEffect(() => {
     if (profileLoaded()) setSplashReady(true)
@@ -29,27 +30,28 @@ function AuthGate() {
   }, [splashReady])
 
   useEffect(() => {
-    if (loading || hasProfile === null) return;
+    if (loading) return
+    if (hasProfile === null) return;
+    if (hasProfile === true && profile === null) return;
 
-    function route() {
-      if (session) {
-        if (hasProfile) { router.replace('/(tabs)/(home)') }
-        else if (!hasProfile) { router.replace('/checkIn') }
-      }
-      if (!session) {
-        router.replace('/login');
-      }
-    }
-    
     const inTabsGroup = segments[0] === '(tabs)';
     const inCheckin = segments[0] === 'checkIn';
     const inLogIn = segments[0] === 'login'
+
+    function route() {
+      if (session) {
+        if (hasProfile && !inTabsGroup) router.replace('/(tabs)/(home)')
+        else if (!hasProfile && !inCheckin) router.replace('/checkIn')
+      } else {
+        if (!inLogIn) router.replace('/login');
+      }
+    }
     route();
 
-  }, [session, loading, hasProfile]);
+  }, [session, loading, hasProfile, profile]);
 
   return <Slot />;
-} 
+}
 
 export default function RootLayout() {
   return (

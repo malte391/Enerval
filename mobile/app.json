@@ -9,8 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.enervalmobile"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.enerval.enervalmobile"
     },
     "android": {
       "adaptiveIcon": {
@@ -35,8 +35,9 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#DDFF00",
           "dark": {
+            "image": "./assets/images/splash-icon-outline-yellow.png",
             "backgroundColor": "#000000"
           }
         }
