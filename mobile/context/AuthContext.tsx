@@ -1,4 +1,4 @@
-import {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
+import {createContext, useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from '@/supabase/supabasepublic';
 import { checkProfileExists } from '@/model/User/userHandling';
@@ -7,14 +7,16 @@ import { Profile } from '@/types';
 export type AuthContextType = {
   session: Session | null;
   loading: boolean;
-  hasProfile: boolean|null; 
-  refetchProfile: () => void; 
+  setLoading: (loading: boolean) => void;
+  hasProfile: boolean | null;
+  refetchProfile: () => void;
   profile: Profile | null
 };
 
 const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
+  setLoading: () => {},
   hasProfile: false,
   refetchProfile: () => {},
   profile: null
@@ -23,74 +25,76 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [hasProfile, setHasProfile] = useState<boolean|null>(null);
+  const [hasProfile, setHasProfile] = useState<boolean | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null)
+  const isFetching = useRef(false)
 
-  async function checkProfile(userId: string) {
-    await checkProfileExists(userId).then((exists) => setHasProfile(exists));
-  }
+  // stable functions — defined outside useCallback so they don't cause dep changes
+  const checkProfile = useCallback(async (userId: string) => {
+    const exists = await checkProfileExists(userId)
+    setHasProfile(exists)
+  }, [])
 
-  async function getProfile(userId : string) {
-    const {data: Profile, error} = await supabase
-            .from('Profiles')
-            .select(
-              'id, first_name, last_name, email'
-            )
-            .eq('id', userId)
-            .single<Profile>()
-      return Profile?? null
-  }
+  const getProfile = useCallback(async (userId: string): Promise<Profile | null> => {
+    const { data } = await supabase
+        .from('Profiles')
+        .select('id, first_name, last_name, email')
+        .eq('id', userId)
+        .single<Profile>()
+    return data ?? null
+  }, [])
+
+  const fetchUserData = useCallback(async (userId: string) => {
+    if (isFetching.current) return
+    isFetching.current = true
+    await Promise.all([
+      checkProfile(userId),
+      getProfile(userId).then(p => setProfile(p))
+    ])
+    isFetching.current = false
+  }, [checkProfile, getProfile])
 
   const refetchProfile = useCallback(async () => {
     if (session?.user.id) {
-      const userId = session!.user.id
-      await checkProfile(userId);
-      getProfile(userId).then(profile => setProfile(profile))
+      await fetchUserData(session.user.id)
     }
-  }, [session])
+  }, [session, fetchUserData])
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) {
-        checkProfile(session.user.id);
-        getProfile(session.user.id).then(profile => setProfile(() => profile))
-      }
-
-      setLoading(false);
-    });
+      setSession(session)
+      if (session) void fetchUserData(session.user.id)
+      setLoading(false)
+    })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
         async (_event, session) => {
-          if (_event === 'INITIAL_SESSION') return;
-          setLoading(true);
-          setSession(session);
+          if (_event === 'INITIAL_SESSION') return
+          setLoading(true)
+          setSession(session)
           if (session) {
-            await Promise.all([
-              checkProfile(session.user.id),
-              getProfile(session.user.id).then(p => setProfile(p))
-            ]);
+            await fetchUserData(session.user.id)
           } else {
-            setHasProfile(false);
-            setProfile(null);
+            setHasProfile(false)
+            setProfile(null)
           }
           setLoading(false)
         }
-    );
+    )
 
-    return () => subscription.unsubscribe();
-  }, []);
+    return () => subscription.unsubscribe()
+  }, [fetchUserData])
 
   const memo = useMemo(
-      () => ({ session, loading, hasProfile, refetchProfile, profile }),
-      [session, loading, hasProfile, profile]
+      () => ({ session, loading, setLoading, hasProfile, refetchProfile, profile }),
+      [session, loading, hasProfile, refetchProfile, profile]
   )
 
   return (
-    <AuthContext.Provider value={memo}>
-      {children}
-    </AuthContext.Provider>
-  );
+      <AuthContext.Provider value={memo}>
+        {children}
+      </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => useContext(AuthContext);

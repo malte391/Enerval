@@ -1,15 +1,13 @@
-import MonthQuartalSwitch from "@/components/Buttons/Switches/CpMonthQuartalSwitch"
 import Datafield from "@/components/Text/CpDataField"
-import CpHeader1 from "@/components/Text/CpHeader1"
-import CpHeader2 from "@/components/Text/CpHeader2"
-import { getUsersMeters } from "@/model/Meters/meterHandling"
-import { sumRecords } from "@/model/Records/recordAccumulation"
-import {getAllRecordsOfAMeter, getAllRecordValuesOfAMeter} from "@/model/Records/recordHandling"
-import { router } from "expo-router"
+import { sumTotalConsumption } from "@/model/Records/recordAccumulation"
+import { getConsumptionDataPerMonthForYear } from "@/model/Records/recordHandling"
 import { useEffect, useState } from "react"
-import { ScrollView, StyleSheet, Text, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
+import { ScrollView, StyleSheet, View } from "react-native"
 import CpModal from "@/components/Wrapper/CpModal";
+import {useProfile} from "@/context/ProfileContext";
+import {Meter, RecordData, Records} from "@/types";
+import CpBarChart from "@/components/Charts/CpBarChart";
+import LoadingView from "@/Views/LoadingView";
 
 const title = {
     ger: 'Verbrauch (historisch)'
@@ -17,40 +15,41 @@ const title = {
 
 export default function ModConsumptionView() {
 
-    const [dimensionSelected, setDimensionSelected] = useState<'m'|'q'>('m')
-    const monthDimensionSelected = dimensionSelected == 'm'
-    const quartalDimensionSelected = dimensionSelected == 'q'
-    const [dimension, setDimension] = useState<boolean>(dimensionSelected == 'm')
-    const [selectedMeter, setSelectedMeter] = useState<string>('')
     const [totalConsumption, setTotalConsumption] = useState<number>(0)
+    const [year, setYear] = useState<number>(new Date().getFullYear())
+    const [chartData, setChartData] = useState<RecordData[]>([{value: 0, label: 'J'}])
+    const [loading, setLoading] = useState<boolean>(true)
 
+    const { meters, records } = useProfile()
+
+    const [selectedMeter, setSelectedMeter] = useState<Pick<Meter, 'meter_number' | 'location'> | null>(meters[0]?? null)
 
     useEffect(() => {
-        async function totalConsumption() {
-            const meters = await getUsersMeters()
-            if (meters && meters.length != 0) {
-                const recordsOfMeter = await getAllRecordValuesOfAMeter(meters[0].meter_number)
-                const sum = sumRecords(recordsOfMeter)
-                setTotalConsumption(sum)
-            }
-        }
-        totalConsumption()
-
-    },[])
-
-
+        if (!selectedMeter) return
+        setLoading(true)
+        const recordsForSelectedMeter = records.filter(r => r.meter === selectedMeter.meter_number)
+        Promise.all([
+            getConsumptionDataPerMonthForYear(selectedMeter.meter_number, year)
+        ]).then(([chartData]) => {
+            setTotalConsumption(sumTotalConsumption(recordsForSelectedMeter.map(r => ({ value: r.value }))))
+            setChartData(chartData)
+            setLoading(false)
+        })
+    }, [selectedMeter, records])
 
     return(
         <CpModal title={title.ger}>
-            <View style={styles.content}>
-                <MonthQuartalSwitch value={dimension} onSwitch={() => setDimension(d => !d)}/>
-                <View style={{borderWidth: 1, height: 200}}>
-                    <CpHeader2 text="Placeholder graph"/>
+            {!loading ?
+                <View style={styles.content}>
+                    <CpBarChart data={chartData} />
+                    <View style={styles.infoTextContainer}>
+                        <Datafield label='Gesamtverbrauch: ' data={`${totalConsumption} kWh`} />
+                    </View>
                 </View>
-                <View style={styles.infoTextContainer}>
-                    <Datafield label='Gesamtverbrauch: ' data={`${totalConsumption} kWh`} />
-                </View>
-            </View>
+                :
+                <LoadingView />
+            }
+
         </CpModal>
     )
 }

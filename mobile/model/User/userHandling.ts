@@ -6,7 +6,7 @@ import { User } from "@supabase/supabase-js"
 
 export const createNewProfile = async (firstName : string, lastName : string) : Promise<void> => {
     try {
-        const user : User = await getSignedInUser()
+        const user = await getSignedInUser()
         const { data:insertionData, error:insertionError } = await supabase
             .from('Profiles')
             .insert([

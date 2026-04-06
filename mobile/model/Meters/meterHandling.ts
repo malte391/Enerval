@@ -7,10 +7,9 @@ import {Meter} from "@/types";
 export async function createNewMeter(meterNumber : string, name: string, locatedAt : string) : Promise<void> {
     
     try {
-        const user : User = await getSignedInUser()
+        const user = await getSignedInUser()
 
         const validation : boolean = await validateMeterInput(meterNumber, locatedAt)
-        console.log(validation)
 
         if(validation) {
             const { error } = await supabase
@@ -21,6 +20,7 @@ export async function createNewMeter(meterNumber : string, name: string, located
                     belongs_to: user.id,
                     location: locatedAt
                 }])
+                .select()
     
             if(error) {throw new Error('Error inserting meter in DB' +  JSON.stringify(error))}
                 else {console.log('New meter created successfully')}
@@ -32,7 +32,6 @@ export async function createNewMeter(meterNumber : string, name: string, located
 
 export async function getUsersMeters() : Promise<Pick<Meter, 'meter_number' | 'location'>[]> {
     const user = await getSignedInUser()
-    console.log(user)
 
     const { data: Meters, error } = await supabase
         .from('Meters')

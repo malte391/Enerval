@@ -2,7 +2,7 @@ import SubmitButton from "@/components/Buttons/CpLoginButton";
 import CredentialInput from "@/components/Input/CpCredentialInput";
 import { useAuth } from "@/context/AuthContext";
 import { provideCityByPostalCode } from "@/model/Addresses/addressAPI";
-import { createNewAddress } from "@/model/Addresses/addressHandling";
+import {createNewAddress, getUsersAddress} from "@/model/Addresses/addressHandling";
 import { signOut } from "@/model/User/sessions";
 import { createNewProfile } from "@/model/User/userHandling";
 import { validatePostalCode } from "@/utils/addressValidation";
@@ -62,8 +62,7 @@ export default function CheckIn() {
     const [meter, setMeter] = useState<string>('')
     const [meterName, setMeterName] = useState<string>('')
     const { refetchProfile } = useAuth()
-
-    const [loading, setLoading] = useState<boolean>(false);
+    const { loading, setLoading } = useAuth()
 
     const {width} = useWindowDimensions()
 
@@ -71,8 +70,11 @@ export default function CheckIn() {
         setLoading(true)
         try {
             await createNewProfile(firstName, lastName)
-            await createNewAddress(country, postalCode, city, street, houseNr, remarks)
+            await createNewAddress(country, postalCode, city, street, houseNr, remarks).then(id => {
+                createNewMeter(meter, meterName, id)
+            })
             refetchProfile()
+            setLoading(false)
         } catch (error) {
             console.log(error)
         }

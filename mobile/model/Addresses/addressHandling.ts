@@ -1,4 +1,3 @@
-import { User } from "@supabase/supabase-js"
 import { supabase } from "@/supabase/supabasepublic"
 import { authentificateAddress } from "@/utils/addressValidation"
 import { getSignedInUser } from "@/model/User/auth"
@@ -10,7 +9,7 @@ export async function createNewAddress(
     city : string, 
     street : string, 
     housenr : string,  
-    remarks? : string) : Promise<void> {
+    remarks? : string) : Promise<string> {
 
     const user = await getSignedInUser()
     if (!user) {throw new Error('User missing')}
@@ -19,7 +18,7 @@ export async function createNewAddress(
     } catch (e) {
        throw new Error('Error when creating new Address: ' + e)
     }
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('Addresses')
         .insert([
             {
@@ -32,11 +31,12 @@ export async function createNewAddress(
                 belongs_to: user!.id
             },
         ])
-        .select()
+        .select('id')
+        .single()
 
-    if (error) {throw new Error(error.message)}
-    else {console.log('Address created successfully')}
-    } 
+    if (error) throw new Error(error.message)
+    return data.id
+}
 
 export async function getUsersAddress() : Promise<Address> {
 
@@ -48,7 +48,7 @@ export async function getUsersAddress() : Promise<Address> {
         .select('*')
         .eq('belongs_to', user!.id)
         .single()
-    if(error) throw new Error('Error getting users address')
+    if(error) throw new Error('Error getting users address' + error.message)
     return Address
 }
 

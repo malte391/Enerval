@@ -15,5 +15,5 @@ export default function CpSubHeader({text = 'Title'}: HeaderProps) {
 
 const styles = StyleSheet.create({
     container: {},
-    text: {fontFamily: 'Helvetica-Neue', fontSize: 14, fontWeight: '400'}
+    text: {fontFamily: 'Helvetica-Neue', fontSize: 14, fontWeight: '400', color: 'rgba(0,0,0,0.7)'}
 })

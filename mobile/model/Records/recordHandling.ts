@@ -1,13 +1,14 @@
-import { Database } from "@/database.types";
 import { getSignedInUser } from "@/model/User/auth";
 import { supabase } from "@/supabase/supabasepublic";
-import {Records} from "@/types";
+import {RecordData, Records} from "@/types";
 import { appendRecord, checkThatMeterExistsInDB, validateRecord } from "@/utils/energyRecordValidator";
-import { sumRecords } from "./recordAccumulation";
+import { sumTotalConsumption } from "./recordAccumulation";
+import {recordAsNumber} from "@/utils/recordConvert";
 
 export async function createNewRecord(value : string, meterNumber : string) {
     
     const user = await getSignedInUser()
+    if(!user) throw new Error("not able to get signed in user")
 
     try {
         await checkThatMeterExistsInDB(meterNumber)
@@ -15,7 +16,7 @@ export async function createNewRecord(value : string, meterNumber : string) {
         if (validateRecord(value)) {
             const record = appendRecord(value)
     
-            const { data: Records, error } = await supabase
+            const { error } = await supabase
                 .from('Records')
                 .insert([{
                     created_by: user.id,
@@ -23,9 +24,8 @@ export async function createNewRecord(value : string, meterNumber : string) {
                     value: record
                 }])
             if(!error) console.log('Record inserted successfully')
-            if (error) throw new Error('Error materializing the new record.')
         }
-        else throw new Error('Invalid record value')
+        else console.log('Invalid record value')
     } catch (error) {
         throw new Error('Error creating new Record: ' + error)
     }
@@ -92,9 +92,29 @@ export const getRecordsForQuartal = async (
     return Records
 }
 
-export const getSumOfRecordsForMonth = async(meter: string, month: number, year: number) : Promise<number> => {
+export const getConsumptionForMonth = async(meter: string, month: number, year: number) : Promise<number> => {
     const records = await getRecordsForMonth(meter, month, year)
-    return sumRecords(records)
+    return sumTotalConsumption(records)
+}
+
+export const getConsumptionPerMonth = async(meter: string, month: number, year: number) : Promise<number> => {
+    const prevMonth = month - 1 === 0 ? 12 : month - 1
+    const prevYear = month - 1 === 0 ? year - 1 : year
+
+    const prevRecords = await getRecordsForMonth(meter, prevMonth, prevYear)
+    const currentRecords = await getRecordsForMonth(meter, month, year)
+
+    if (currentRecords.length === 0) return 0
+
+    const lastCurrent = recordAsNumber(currentRecords[currentRecords.length - 1].value)
+
+    if (prevRecords.length === 0) {
+        const firstCurrent = recordAsNumber(currentRecords[0].value)
+        return lastCurrent - firstCurrent
+    }
+
+    const lastPrev = recordAsNumber(prevRecords[prevRecords.length - 1].value)
+    return lastCurrent - lastPrev
 }
 
 export const getSumOfRecordsForQuartal = async(
@@ -103,6 +123,41 @@ export const getSumOfRecordsForQuartal = async(
     year: number
     ) => {
         const records = await getRecordsForQuartal(meter, quartal, year)
-        return sumRecords(records)
+        return sumTotalConsumption(records)
     }
+
+export const getMetersLatestRecord = async (meterNr: string) : Promise<number> => {
+    const {data: Records} = await supabase
+        .from('Records')
+        .select('value')
+        .eq('meter', meterNr)
+
+    if(!Records || Records.length == 0) return 0
+    return Math.max(...Records.map(r => recordAsNumber(r.value)))
+}
+
+export const getConsumptionDataPerMonthForYear = async (meter: string, year: number) : Promise<RecordData[]> => {
+    const months: {number: number, letter: string}[] = [
+        {number: 1,  letter: 'J'},
+        {number: 2,  letter: 'F'},
+        {number: 3,  letter: 'M'},
+        {number: 4,  letter: 'A'},
+        {number: 5,  letter: 'M'},
+        {number: 6,  letter: 'J'},
+        {number: 7,  letter: 'J'},
+        {number: 8,  letter: 'A'},
+        {number: 9,  letter: 'S'},
+        {number: 10, letter: 'O'},
+        {number: 11, letter: 'N'},
+        {number: 12, letter: 'D'},
+    ]
+    const result = await Promise.all(
+        months.map(async (month) => ({
+            value: await getConsumptionPerMonth(meter, month.number, year),
+            label: month.letter
+        }))
+    )
+    console.log(result)
+    return result
+}
 
